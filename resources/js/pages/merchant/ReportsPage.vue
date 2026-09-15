@@ -1,0 +1,2 @@
+<template><div><h2 class="text-xl font-bold text-ink mb-6">Laporan Penjualan</h2><div class="bg-white rounded-2xl border border-limestone-100 p-6"><p class="text-ink/50 text-sm">Laporan penjualan tersedia untuk paket dan order yang Anda miliki.</p></div></div></template>
+<script setup></script>
