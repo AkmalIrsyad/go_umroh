@@ -429,7 +429,7 @@ const activeModalTitle = ref('');
 const airlines = [
   { name: 'Saudia', logo: '/airlines/Saudia_Logo.svg' },
   { name: 'Garuda Indonesia', logo: '/airlines/Garuda_Indonesia_Logo.svg' },
-  { name: 'Qatar Airways', logo: '/airlines/Qatar_Airways_Logo.svg' },
+  { name: 'Qatar Airways', logo: '/airlines/Qatar_Airways_logo.svg' },
   { name: 'Emirates', logo: '/airlines/Emirates_Logo.svg' },
   { name: 'Etihad Airways', logo: '/airlines/Etihad_Airways_Logo.svg' },
   { name: 'Oman Air', logo: '/airlines/Oman_Air_Logo.svg' },
