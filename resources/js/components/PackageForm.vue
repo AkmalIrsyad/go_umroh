@@ -460,7 +460,7 @@ const router = useRouter();
 const { formatRupiah } = useFormatCurrency();
 const { success, error: showError } = useToast();
 
-const isEdit = computed(() => !!route.params.id);
+const isEdit = computed(() => !!route.params.slug);
 const backUrl = computed(() => props.portal === 'admin' ? '/admin/packages' : '/merchant/packages');
 
 const activeStep = ref(0);
@@ -507,7 +507,7 @@ onMounted(async () => {
         hotels.value = hRes.data.data;
 
         if (isEdit.value) {
-            await fetchPackageData(route.params.id);
+            await fetchPackageData(route.params.slug);
         }
     } catch {
         showError('Gagal memuat data master.');
@@ -591,23 +591,23 @@ async function handleSubmit() {
 
     saving.value = true;
     try {
-        let savedPackageId = route.params.id;
+        let savedPackageSlug = route.params.slug;
 
         if (isEdit.value) {
             const url = props.portal === 'admin' 
-                ? `/api/v1/admin/packages/${savedPackageId}` 
-                : `/api/v1/merchant/packages/${savedPackageId}`;
+                ? `/api/v1/admin/packages/${savedPackageSlug}` 
+                : `/api/v1/merchant/packages/${savedPackageSlug}`;
             await axios.put(url, form.value);
         } else {
             const url = props.portal === 'admin' 
                 ? '/api/v1/admin/packages' 
                 : '/api/v1/merchant/packages';
             const { data } = await axios.post(url, form.value);
-            savedPackageId = data.data.id;
+            savedPackageSlug = data.data.slug;
         }
 
         // Upload any pending new images
-        if (pendingImages.value.length > 0 && savedPackageId) {
+        if (pendingImages.value.length > 0 && savedPackageSlug) {
             for (let i = 0; i < pendingImages.value.length; i++) {
                 const item = pendingImages.value[i];
                 const fd = new FormData();
@@ -615,7 +615,7 @@ async function handleSubmit() {
                 if (existingImages.value.length === 0 && i === 0) {
                     fd.append('is_primary', '1');
                 }
-                await axios.post(`/api/v1/packages/${savedPackageId}/images`, fd);
+                await axios.post(`/api/v1/packages/${savedPackageSlug}/images`, fd);
             }
         }
 

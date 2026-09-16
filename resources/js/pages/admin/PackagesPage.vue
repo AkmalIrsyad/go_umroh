@@ -111,7 +111,7 @@
                     </button>
 
                     <RouterLink 
-                        :to="{ name: 'admin.packages.edit', params: { id: row.id } }"
+                        :to="{ name: 'admin.packages.edit', params: { slug: row.slug } }"
                         class="px-2.5 py-1 bg-limestone text-ink text-xs font-bold rounded-lg hover:bg-limestone-100 transition-colors"
                     >
                         Edit

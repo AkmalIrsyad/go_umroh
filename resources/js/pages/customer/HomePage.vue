@@ -92,7 +92,7 @@
     </section>
 
     <!-- Key Statistics Bar -->
-    <section class="bg-white border-b border-limestone-100 relative z-20 shadow-sm">
+    <!-- <section class="bg-white border-b border-limestone-100 relative z-20 shadow-sm">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
           <div 
@@ -110,7 +110,44 @@
           </div>
         </div>
       </div>
-    </section>
+    </section> -->
+<!-- Partner Maskapai Marquee Section -->
+<section class="bg-white border-b border-limestone-100 py-6 relative overflow-hidden">
+  
+  <!-- Gradient Fade Effect di Kiri & Kanan -->
+  <div class="pointer-events-none absolute inset-y-0 left-0 w-16 md:w-32 bg-gradient-to-r from-white to-transparent z-10"></div>
+  <div class="pointer-events-none absolute inset-y-0 right-0 w-16 md:w-32 bg-gradient-to-l from-white to-transparent z-10"></div>
+
+  <!-- Label Judul Kecil -->
+  <div class="max-w-7xl mx-auto px-4 text-center mb-4">
+    <p class="text-xs font-bold tracking-widest text-ink/40 uppercase">Maskapai Penerbangan Partner</p>
+  </div>
+
+  <!-- Running Marquee Track -->
+  <div class="flex overflow-hidden select-none group">
+    <!-- Set 1 -->
+    <div class="flex shrink-0 items-center justify-around gap-12 min-w-full animate-marquee group-hover:[animation-play-state:paused]">
+      <div 
+        v-for="(airline, index) in airlines" 
+        :key="`a1-${index}`" 
+        class="flex items-center px-2 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-pointer"
+      >
+        <img :src="airline.logo" :alt="airline.name" class="h-7 md:h-9 w-auto object-contain" />
+      </div>
+    </div>
+
+    <!-- Set 2 (Duplikasi untuk efek seamless loop tanpa jeda) -->
+    <div class="flex shrink-0 items-center justify-around gap-12 min-w-full animate-marquee group-hover:[animation-play-state:paused]" aria-hidden="true">
+      <div 
+        v-for="(airline, index) in airlines" 
+        :key="`a2-${index}`" 
+        class="flex items-center px-2 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300 cursor-pointer"
+      >
+        <img :src="airline.logo" :alt="airline.name" class="h-7 md:h-9 w-auto object-contain" />
+      </div>
+    </div>
+  </div>
+</section>
 
     <!-- Featured Packages Section -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
@@ -275,7 +312,7 @@
               Tutup
             </button>
             <RouterLink 
-              :to="{ name: 'package.detail', params: { id: selectedEventPackage.id } }"
+              :to="{ name: 'package.detail', params: { slug: selectedEventPackage.slug } }"
               class="px-6 py-2.5 bg-brass hover:bg-brass-600 text-white rounded-xl text-xs font-bold shadow-md shadow-brass/20 transition-all inline-flex items-center gap-2"
             >
               <span>Lihat Detail & Booking</span>
@@ -309,7 +346,7 @@
             <div class="flex sm:flex-col items-end justify-between sm:justify-center gap-2 shrink-0">
               <p class="text-sm font-extrabold text-brass">{{ formatRupiah(pkg.price) }}</p>
               <RouterLink 
-                :to="{ name: 'package.detail', params: { id: pkg.id } }"
+                :to="{ name: 'package.detail', params: { slug: pkg.slug } }"
                 class="px-4 py-2 bg-indigo-dusk hover:bg-indigo-dusk-900 text-white rounded-xl text-xs font-bold transition-colors"
               >
                 Pilih Paket
@@ -383,11 +420,20 @@ const selectedDatePackages = ref([]);
 const activeModalTitle = ref('');
 
 // Stats dengan Flaticon Icons
-const stats = [
-  { value: '500+', label: 'Paket Tersedia', icon: 'fi fi-rr-mosque' },
-  { value: '50+', label: 'Travel Partner', icon: 'fi fi-rr-building' },
-  { value: '10.000+', label: 'Jamaah Diberangkatkan', icon: 'fi fi-rr-users' },
-  { value: '4.9/5', label: 'Rating Kepuasan', icon: 'fi fi-rr-star' },
+// const stats = [
+//   { value: '500+', label: 'Paket Tersedia', icon: 'fi fi-rr-mosque' },
+//   { value: '50+', label: 'Travel Partner', icon: 'fi fi-rr-building' },
+//   { value: '10.000+', label: 'Jamaah Diberangkatkan', icon: 'fi fi-rr-users' },
+//   { value: '4.9/5', label: 'Rating Kepuasan', icon: 'fi fi-rr-star' },
+// ];
+const airlines = [
+  { name: 'Saudia', logo: '/airlines/Saudia_Logo.svg' },
+  { name: 'Garuda Indonesia', logo: '/airlines/Garuda_Indonesia_Logo.svg' },
+  { name: 'Qatar Airways', logo: '/airlines/Qatar_Airways_Logo.svg' },
+  { name: 'Emirates', logo: '/airlines/Emirates_Logo.svg' },
+  { name: 'Etihad Airways', logo: '/airlines/Etihad_Airways_Logo.svg' },
+  { name: 'Oman Air', logo: '/airlines/Oman_Air_Logo.svg' },
+  { name: 'Flynas', logo: '/airlines/Flynas_Logo.svg' },
 ];
 
 // Reasons dengan Flaticon Icons
@@ -597,5 +643,18 @@ onUnmounted(() => {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 25s linear infinite;
 }
 </style>

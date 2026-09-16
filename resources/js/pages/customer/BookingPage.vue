@@ -66,11 +66,11 @@ const pkg = ref(null); const loading = ref(true); const submitting = ref(false);
 const participants = ref([{ nama: '', nomor_ponsel: '', tipe: 'dewasa' }]);
 function addParticipant() { participants.value.push({ nama: '', nomor_ponsel: '', tipe: 'dewasa' }); }
 function removeParticipant(i) { participants.value.splice(i, 1); }
-onMounted(async () => { try { const { data } = await axios.get(`/api/v1/packages/${route.params.id}`); pkg.value = data.data; } finally { loading.value = false; } });
+onMounted(async () => { try { const { data } = await axios.get(`/api/v1/packages/${route.params.slug}`); pkg.value = data.data; } finally { loading.value = false; } });
 async function submitOrder() {
     submitting.value = true;
     try {
-        const { data } = await axios.post('/api/v1/orders', { umrah_package_id: route.params.id, participants: participants.value });
+        const { data } = await axios.post('/api/v1/orders', { umrah_package_id: pkg.value.id, participants: participants.value });
         success('Pesanan berhasil dibuat!');
         router.push({ name: 'order.detail', params: { id: data.data.id } });
     } catch (e) { showError(e.response?.data?.message || 'Gagal membuat pesanan.'); }

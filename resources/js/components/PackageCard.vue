@@ -1,5 +1,5 @@
 <template>
-    <RouterLink :to="{ name: 'package.detail', params: { id: pkg.id } }"
+    <RouterLink :to="{ name: 'package.detail', params: { slug: pkg.slug } }"
         class="group bg-white rounded-2xl border border-limestone-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col">
         <!-- Image -->
         <div class="relative aspect-[16/9] overflow-hidden bg-limestone-100">

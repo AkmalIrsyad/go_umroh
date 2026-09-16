@@ -98,7 +98,7 @@
                         </div>
 
                         <RouterLink v-if="pkg.available_seats > 0 && pkg.status === 'approved'"
-                            :to="{ name: 'booking', params: { id: pkg.id } }"
+                            :to="{ name: 'booking', params: { slug: pkg.slug } }"
                             class="block w-full bg-brass hover:bg-brass-600 text-white text-center py-3.5 rounded-xl font-semibold transition-colors">
                             🕌 Pesan Sekarang
                         </RouterLink>
@@ -117,7 +117,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import CustomerLayout from '../../layouts/CustomerLayout.vue';
 import { useFormatCurrency } from '../../composables/useFormatCurrency';
@@ -129,14 +129,64 @@ const pkg = ref(null);
 const loading = ref(true);
 const activeImage = ref(null);
 
+/** Dynamically set Open Graph & title meta tags for SEO */
+function setOpenGraphTags(data) {
+    const primaryImage = data.images?.find(i => i.is_primary)?.url || data.images?.[0]?.url || '';
+    const description = `Paket Umroh ${data.type?.toUpperCase()} - ${data.duration} Hari. Keberangkatan: ${formatDate(data.departure_date)}. Harga mulai ${formatRupiah(data.price)}. Sisa ${data.available_seats} kursi.`;
+    const url = window.location.href;
+
+    document.title = `${data.title} | Go Umroh`;
+
+    const metas = [
+        { property: 'og:title', content: data.title },
+        { property: 'og:description', content: description },
+        { property: 'og:image', content: primaryImage },
+        { property: 'og:url', content: url },
+        { property: 'og:type', content: 'product' },
+        { property: 'og:site_name', content: 'Go Umroh' },
+        { name: 'description', content: description },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: data.title },
+        { name: 'twitter:description', content: description },
+        { name: 'twitter:image', content: primaryImage },
+    ];
+
+    metas.forEach(({ property, name, content }) => {
+        const selector = property
+            ? `meta[property="${property}"]`
+            : `meta[name="${name}"]`;
+        let el = document.querySelector(selector);
+        if (!el) {
+            el = document.createElement('meta');
+            if (property) el.setAttribute('property', property);
+            if (name) el.setAttribute('name', name);
+            document.head.appendChild(el);
+        }
+        el.setAttribute('content', content);
+    });
+}
+
+/** Remove dynamic OG tags when navigating away */
+function removeOpenGraphTags() {
+    document.title = 'Go Umroh — Marketplace Umroh Terpercaya';
+    ['og:title', 'og:description', 'og:image', 'og:url', 'og:type'].forEach(prop => {
+        document.querySelector(`meta[property="${prop}"]`)?.remove();
+    });
+}
+
 onMounted(async () => {
     try {
-        const { data } = await axios.get(`/api/v1/packages/${route.params.id}`);
+        const { data } = await axios.get(`/api/v1/packages/${route.params.slug}`);
         pkg.value = data.data;
         activeImage.value = pkg.value.images?.find(i => i.is_primary)?.url || pkg.value.images?.[0]?.url;
+        setOpenGraphTags(pkg.value);
     } finally {
         loading.value = false;
     }
+});
+
+onUnmounted(() => {
+    removeOpenGraphTags();
 });
 
 function formatDate(d) {

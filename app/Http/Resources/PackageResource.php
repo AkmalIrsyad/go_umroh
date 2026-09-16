@@ -13,6 +13,7 @@ class PackageResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'slug' => $this->slug,
             'type' => $this->type,
             'departure_date' => $this->departure_date instanceof \DateTimeInterface ? $this->departure_date->format('Y-m-d') : ($this->departure_date ? (string) $this->departure_date : null),
             'price' => $this->price,

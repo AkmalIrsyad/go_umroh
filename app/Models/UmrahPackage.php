@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class UmrahPackage extends Model
 {
@@ -17,6 +18,54 @@ class UmrahPackage extends Model
             'capacity' => 'integer',
             'booked_count' => 'integer',
         ];
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function (self $package): void {
+            if (empty($package->slug)) {
+                $package->slug = self::generateUniqueSlug($package->title);
+            }
+        });
+
+        static::updating(function (self $package): void {
+            if ($package->isDirty('title') && empty($package->slug)) {
+                $package->slug = self::generateUniqueSlug($package->title, $package->id);
+            }
+        });
+    }
+
+    /**
+     * Generate a URL-friendly slug from a title, ensuring uniqueness.
+     */
+    private static function generateUniqueSlug(string $title, ?int $excludeId = null): string
+    {
+        $base = Str::slug($title);
+        $slug = $base;
+        $i = 1;
+
+        while (true) {
+            $query = self::where('slug', $slug);
+            if ($excludeId) {
+                $query->where('id', '!=', $excludeId);
+            }
+
+            if (! $query->exists()) {
+                break;
+            }
+
+            $slug = "{$base}-{$i}";
+            $i++;
+        }
+
+        return $slug;
     }
 
     public function airLine()
