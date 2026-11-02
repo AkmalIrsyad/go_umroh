@@ -19,7 +19,7 @@
           <!-- Mobile Banner Image (Hanya tampil di Layar HP & Tablet) -->
           <div class="lg:hidden w-full h-44 sm:h-56 rounded-2xl overflow-hidden mb-6 relative">
             <img 
-              src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?q=80&w=1000&auto=format&fit=crop" 
+              src="/images/madinah.jpg" 
               alt="Umrah Visual" 
               class="w-full h-full object-cover"
             />

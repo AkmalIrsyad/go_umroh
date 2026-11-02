@@ -25,10 +25,7 @@
       <!-- Hero Content -->
       <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
         <div class="max-w-2xl">
-          <div class="inline-flex items-center gap-2 bg-brass/15 border border-brass/30 text-brass text-xs font-semibold px-3.5 py-1.5 rounded-full mb-6 backdrop-blur-md">
-            <i class="fi fi-rr-badge-check text-sm" />
-            <span class="uppercase tracking-wider">Marketplace Umrah Terpercaya #1</span>
-          </div>
+         
 
           <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white leading-tight mb-6 tracking-tight">
             Wujudkan <br />
@@ -39,7 +36,7 @@
           </h1>
 
           <p class="text-white/70 text-base sm:text-lg mb-8 leading-relaxed font-normal">
-            Temukan ratusan paket umrah resmi dengan jaminan fasilitas terbaik, kepastian keberangkatan, dan transparansi harga.
+            Temukan ratusan paket umrah resmi dengan jaminan fasilitas terbaik, kepastian keberangkatan.
           </p>
 
           <!-- Floating Search Widget -->
@@ -357,35 +354,86 @@
       </div>
     </div>
 
-    <!-- Why Choose Us Section -->
-    <section class="bg-gradient-to-b from-indigo-dusk to-slate-900 text-white py-20 relative overflow-hidden">
-      <!-- Decorative Background Ornaments -->
-      <div class="absolute top-0 right-0 translate-x-1/3 -translate-y-1/3 w-[500px] h-[500px] bg-brass/10 rounded-full blur-3xl pointer-events-none" />
-      <div class="absolute bottom-0 left-0 -translate-x-1/3 translate-y-1/3 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="text-center max-w-2xl mx-auto mb-16">
+    <!-- Testimonial Card Carousel Section -->
+    <section class="bg-gradient-to-b from-indigo-dusk to-slate-900 text-white py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-12">
           <span class="text-brass text-xs font-bold uppercase tracking-widest bg-brass/10 border border-brass/20 px-3 py-1 rounded-full inline-block mb-3">
-            Keunggulan Layanan
+            Testimoni Jamaah
           </span>
-          <h2 class="text-3xl sm:text-4xl font-extrabold mb-4 tracking-tight">Mengapa Pilih GoUmrah?</h2>
+          <h2 class="text-3xl sm:text-4xl font-extrabold mb-4 tracking-tight">Cerita Nyata dari Jamaah Kami</h2>
           <p class="text-white/60 text-base leading-relaxed">
-            Komitmen kami adalah memberikan ketenangan dan kenyamanan ibadah Anda dari persiapan hingga kembali ke tanah air.
+            Ribuan jamaah telah mempercayakan perjalanan ibadah mereka bersama GoUmrah.
           </p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div 
-            v-for="reason in reasons" 
-            :key="reason.title"
-            class="bg-white/5 border border-white/10 rounded-3xl p-6 hover:bg-white/10 hover:border-brass/30 transition-all duration-300 group"
-          >
-            <div class="w-14 h-14 rounded-2xl bg-brass/15 text-brass flex items-center justify-center text-2xl mb-6 group-hover:scale-110 group-hover:bg-brass group-hover:text-white transition-all duration-300 shadow-lg">
-              <i :class="reason.icon" />
+        <!-- Carousel Wrapper -->
+        <div class="relative">
+          <!-- Overflow Track -->
+          <div class="overflow-hidden">
+            <div
+              class="flex gap-6 transition-transform duration-500 ease-in-out"
+              :style="{ transform: `translateX(calc(-${activeTestimonial * (100 / visibleCards)}% - ${activeTestimonial * 24 / visibleCards}px))` }"
+            >
+              <div
+                v-for="(t, i) in testimonials"
+                :key="i"
+                class="flex-shrink-0 bg-white/5 border border-white/10 rounded-3xl p-6 flex flex-col gap-5 hover:bg-white/10 hover:border-brass/30 transition-colors duration-300 testimonial-card"
+              >
+                <!-- Stars -->
+                <div class="flex items-center gap-1">
+                  <i v-for="s in 5" :key="s" class="fi fi-ss-star text-brass text-sm" />
+                </div>
+
+                <!-- Quote -->
+                <blockquote class="text-white/80 text-sm leading-relaxed italic flex-1">
+                  "{{ t.quote }}"
+                </blockquote>
+
+                <!-- Divider -->
+                <div class="border-t border-white/10" />
+
+                <!-- Avatar & Info -->
+                <div class="flex items-center gap-3">
+                  <div class="w-11 h-11 rounded-full bg-brass/20 border-2 border-brass/40 flex items-center justify-center text-brass text-lg font-extrabold shrink-0">
+                    {{ t.name.charAt(0) }}
+                  </div>
+                  <div>
+                    <p class="font-bold text-white text-sm">{{ t.name }}</p>
+                    <p class="text-white/50 text-xs mt-0.5">{{ t.origin }} · {{ t.package }}</p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <h3 class="font-bold text-lg mb-2 text-white group-hover:text-brass transition-colors">{{ reason.title }}</h3>
-            <p class="text-white/60 text-sm leading-relaxed">{{ reason.desc }}</p>
           </div>
+
+          <!-- Prev Arrow -->
+          <button
+            @click="prevTestimonial"
+            :disabled="activeTestimonial === 0"
+            class="absolute -left-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-brass border border-white/10 hover:border-brass flex items-center justify-center text-white transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <i class="fi fi-rr-angle-left text-sm" />
+          </button>
+
+          <!-- Next Arrow -->
+          <button
+            @click="nextTestimonial"
+            :disabled="activeTestimonial >= testimonials.length - visibleCards"
+            class="absolute -right-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-brass border border-white/10 hover:border-brass flex items-center justify-center text-white transition-all duration-200 disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <i class="fi fi-rr-angle-right text-sm" />
+          </button>
+        </div>
+
+        <!-- Dot Navigation -->
+        <div class="flex items-center justify-center gap-2 mt-8">
+          <button
+            v-for="(_, i) in testimonials.length - visibleCards + 1"
+            :key="i"
+            @click="activeTestimonial = i; resetTestimonialInterval()"
+            :class="['h-2 rounded-full transition-all duration-300', i === activeTestimonial ? 'bg-brass w-8' : 'bg-white/20 hover:bg-white/40 w-2']"
+          />
         </div>
       </div>
     </section>
@@ -436,29 +484,74 @@ const airlines = [
   { name: 'Flynas', logo: '/airlines/Flynas_Logo.svg' },
 ];
 
-// Reasons dengan Flaticon Icons
-const reasons = [
-  { 
-    icon: 'fi fi-rr-shield-check', 
-    title: 'Terpercaya', 
-    desc: 'Semua travel partner terverifikasi resmi dan memiliki izin Penyelenggara Perjalanan Ibadah Umrah (PPIU).' 
+// Testimonial Card Carousel
+const activeTestimonial = ref(0);
+let testimonialInterval = null;
+
+// Responsive: number of cards visible at a time
+const visibleCards = ref(3);
+function updateVisibleCards() {
+  const w = window.innerWidth;
+  visibleCards.value = w < 640 ? 1 : w < 1024 ? 2 : 3;
+}
+
+const testimonials = [
+  {
+    name: 'Hj. Siti Rahayu',
+    origin: 'Jakarta Selatan',
+    package: 'Paket VIP 14 Hari',
+    quote: 'Pengalaman umrah terbaik yang pernah saya rasakan. Pelayanan dari GoUmrah sangat profesional, hotel dekat Masjidil Haram, dan pembimbing ibadah yang sabar dan berpengalaman.',
   },
-  { 
-    icon: 'fi fi-rr-receipt', 
-    title: 'Harga Transparan', 
-    desc: 'Tanpa biaya tersembunyi. Seluruh rincian biaya, fasilitator, dan skema pembayaran tertera jelas.' 
+  {
+    name: 'Bapak Ahmad Fauzi',
+    origin: 'Surabaya',
+    package: 'Paket Regular 9 Hari',
+    quote: 'Pertama kali umrah bersama istri, kami sangat terbantu dengan sistem booking yang mudah dan transparan. Tidak ada biaya tersembunyi, semua sesuai yang dijanjikan.',
   },
-  { 
-    icon: 'fi fi-rr-mobile-button', 
-    title: 'Mudah & Cepat', 
-    desc: 'Kemudahan pendaftaran, verifikasi berkas dokumen, dan pembayaran online dalam satu genggaman.' 
+  {
+    name: 'Ustadz Rahmat Hidayat',
+    origin: 'Bandung',
+    package: 'Paket Promo Ramadhan',
+    quote: 'Subhanallah, paket promonya sangat terjangkau tapi fasilitas tidak kalah. Rombongan kami terdiri dari 15 orang dan semua merasa puas. Insyaallah akan umrah lagi melalui GoUmrah.',
   },
-  { 
-    icon: 'fi fi-rr-apps', 
-    title: 'Pilihan Lengkap', 
-    desc: 'Bebas pilih ratusan paket Regular, VIP, maupun Promo yang disesuaikan dengan kebutuhan Anda.' 
+  {
+    name: 'Ibu Dewi Lestari',
+    origin: 'Medan',
+    package: 'Paket VIP 12 Hari',
+    quote: 'Awalnya ragu booking online, tapi ternyata prosesnya mudah sekali. CS-nya sangat responsif menjawab setiap pertanyaan saya. Ibadah umrah jadi tenang karena semua sudah diurus.',
+  },
+  {
+    name: 'H. Bambang Santoso',
+    origin: 'Yogyakarta',
+    package: 'Paket Regular 10 Hari',
+    quote: 'Sudah dua kali umrah bersama GoUmrah dan selalu memuaskan. Koordinasi grup yang rapi, muthawwif berpengalaman, dan hotel selalu terjaga kualitasnya. Sangat direkomendasikan.',
   },
 ];
+
+function maxOffset() {
+  return Math.max(0, testimonials.length - visibleCards.value);
+}
+
+function nextTestimonial() {
+  activeTestimonial.value = Math.min(activeTestimonial.value + 1, maxOffset());
+  resetTestimonialInterval();
+}
+
+function prevTestimonial() {
+  activeTestimonial.value = Math.max(activeTestimonial.value - 1, 0);
+  resetTestimonialInterval();
+}
+
+function resetTestimonialInterval() {
+  if (testimonialInterval) clearInterval(testimonialInterval);
+  testimonialInterval = setInterval(() => {
+    if (activeTestimonial.value >= maxOffset()) {
+      activeTestimonial.value = 0;
+    } else {
+      activeTestimonial.value += 1;
+    }
+  }, 5000);
+}
 
 function formatDateIndo(dateStr) {
   if (!dateStr) return '-';
@@ -548,6 +641,9 @@ function goSearch() {
 }
 
 onMounted(async () => {
+  updateVisibleCards();
+  window.addEventListener('resize', updateVisibleCards);
+
   try {
     const [featRes, allRes, sliderRes] = await Promise.all([
       axios.get('/api/v1/packages', { params: { per_page: 6 } }),
@@ -563,6 +659,9 @@ onMounted(async () => {
         activeSlide.value = (activeSlide.value + 1) % sliders.value.length;
       }, 5000);
     }
+
+    // Start testimonial card carousel auto-play
+    resetTestimonialInterval();
   } catch (error) {
     console.error('Gagal mengambil data landing page:', error);
   } finally {
@@ -572,6 +671,8 @@ onMounted(async () => {
 
 onUnmounted(() => {
   if (slideInterval) clearInterval(slideInterval);
+  if (testimonialInterval) clearInterval(testimonialInterval);
+  window.removeEventListener('resize', updateVisibleCards);
 });
 </script>
 
@@ -656,5 +757,22 @@ onUnmounted(() => {
 
 .animate-marquee {
   animation: marquee 25s linear infinite;
+}
+
+/* Testimonial Card Carousel */
+.testimonial-card {
+  width: calc((100% - 48px) / 3); /* 3 cards, 2 gaps of 24px */
+}
+
+@media (max-width: 1023px) {
+  .testimonial-card {
+    width: calc((100% - 24px) / 2); /* 2 cards, 1 gap */
+  }
+}
+
+@media (max-width: 639px) {
+  .testimonial-card {
+    width: 100%;
+  }
 }
 </style>
