@@ -8,7 +8,10 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Laravel\Socialite\Facades\Socialite;
+use Throwable;
 
 class AuthController extends Controller
 {
@@ -49,5 +52,57 @@ class AuthController extends Controller
         $this->authService->logout($request->user());
 
         return response()->json(['message' => 'Logout berhasil.']);
+    }
+
+    /**
+     * Redirect to Google OAuth provider.
+     */
+    public function redirectToGoogle(Request $request): JsonResponse|RedirectResponse
+    {
+        $role = $request->query('role', 'user');
+        $state = base64_encode(json_encode(['role' => $role]));
+
+        /** @var \Laravel\Socialite\Two\GoogleProvider $driver */
+        $driver = Socialite::driver('google')->stateless();
+        $targetUrl = $driver->with(['state' => $state])->redirect()->getTargetUrl();
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'url' => $targetUrl,
+            ]);
+        }
+
+        return redirect()->away($targetUrl);
+    }
+
+    /**
+     * Handle callback from Google OAuth provider.
+     */
+    public function handleGoogleCallback(Request $request): RedirectResponse
+    {
+        try {
+            $role = 'user';
+            if ($request->filled('state')) {
+                $decoded = json_decode(base64_decode((string) $request->query('state')), true);
+                if (is_array($decoded) && isset($decoded['role'])) {
+                    $role = $decoded['role'];
+                }
+            }
+
+            /** @var \Laravel\Socialite\Two\GoogleProvider $driver */
+            $driver = Socialite::driver('google')->stateless();
+            $googleUser = $driver->user();
+
+            $result = $this->authService->handleGoogleUser($googleUser, $role);
+
+            $query = http_build_query([
+                'token' => $result['token'],
+            ]);
+
+            return redirect('/auth/google/callback?' . $query);
+        } catch (Throwable $e) {
+            $message = $e->getMessage() ?: 'Autentikasi dengan Google dibatalkan atau gagal.';
+            return redirect('/login?error=' . urlencode($message));
+        }
     }
 }

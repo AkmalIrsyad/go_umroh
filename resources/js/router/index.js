@@ -14,6 +14,8 @@ const customerRoutes = [
     { path: '/manasik', component: () => import('../pages/customer/ManasikPage.vue'), name: 'manasik' },
     { path: '/login', component: () => import('../pages/auth/LoginPage.vue'), name: 'login' },
     { path: '/register', component: () => import('../pages/auth/RegisterPage.vue'), name: 'register' },
+    { path: '/auth/google/callback', component: () => import('../pages/auth/GoogleCallbackPage.vue'), name: 'auth.google.callback' },
+    { path: '/suspended', component: () => import('../pages/auth/SuspendedPage.vue'), name: 'suspended' },
 ];
 
 // Admin routes
@@ -74,6 +76,18 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const authStore = useAuthStore();
+
+    // If authenticated user is suspended, redirect to /suspended
+    // (allow only 'suspended', 'login', and 'auth.google.callback' pages)
+    const bypassSuspension = ['suspended', 'login', 'register', 'auth.google.callback'];
+    if (
+        authStore.isAuthenticated &&
+        authStore.user?.status === 'pending' &&
+        !bypassSuspension.includes(to.name)
+    ) {
+        next({ name: 'suspended' });
+        return;
+    }
 
     if (to.meta.requiresAuth && !authStore.isAuthenticated) {
         next({ name: 'login', query: { redirect: to.fullPath } });

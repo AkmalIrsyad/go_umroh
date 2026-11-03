@@ -22,6 +22,8 @@ Route::prefix('v1')->group(function () {
     // ── Public Auth ────────────────────────────────────────────
     Route::post('/register', [AuthController::class, 'register'])->name('api.register');
     Route::post('/login', [AuthController::class, 'login'])->name('api.login');
+    Route::get('/auth/google/redirect', [AuthController::class, 'redirectToGoogle'])->name('api.auth.google.redirect');
+    Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->name('api.auth.google.callback');
 
     // ── Public Package Listing ─────────────────────────────────
     Route::get('/packages', [PackageController::class, 'index'])->name('api.packages.index');
@@ -39,7 +41,11 @@ Route::prefix('v1')->group(function () {
 
     // ── Authenticated ──────────────────────────────────────────
     Route::middleware('auth:sanctum')->group(function () {
+        // Logout is always allowed (so suspended users can log out)
         Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
+
+        // All other authenticated routes require approved status
+        Route::middleware('approved')->group(function () {
         Route::get('/me', [AuthController::class, 'me'])->name('api.me');
         Route::put('/me', [UserController::class, 'updateProfile'])->name('api.me.update');
 
@@ -127,5 +133,6 @@ Route::prefix('v1')->group(function () {
             Route::get('/settings', [SettingController::class, 'index'])->name('api.admin.settings.index');
             Route::put('/settings', [SettingController::class, 'update'])->name('api.admin.settings.update');
         });
+        }); // end approved middleware
     });
 });

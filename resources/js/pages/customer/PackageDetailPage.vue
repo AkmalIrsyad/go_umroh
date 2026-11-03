@@ -131,22 +131,27 @@ const activeImage = ref(null);
 
 /** Dynamically set Open Graph & title meta tags for SEO */
 function setOpenGraphTags(data) {
-    const primaryImage = data.images?.find(i => i.is_primary)?.url || data.images?.[0]?.url || '';
-    const description = `Paket Umroh ${data.type?.toUpperCase()} - ${data.duration} Hari. Keberangkatan: ${formatDate(data.departure_date)}. Harga mulai ${formatRupiah(data.price)}. Sisa ${data.available_seats} kursi.`;
+    const primaryImage = data.images?.find(i => i.is_primary)?.url || data.images?.[0]?.url || (window.location.origin + '/go_umroh.svg');
+    const airlineName = data.airline?.nama ? ` bersama ${data.airline.nama}` : '';
+    const description = `Paket Umroh ${data.type?.toUpperCase()} ${data.duration} Hari${airlineName}. Keberangkatan: ${formatDate(data.departure_date)}. Harga mulai ${formatRupiah(data.price)}. Sisa ${data.available_seats} kursi.`;
     const url = window.location.href;
+    const pageTitle = `${data.title} — Go Umroh`;
 
-    document.title = `${data.title} | Go Umroh`;
+    document.title = pageTitle;
 
     const metas = [
-        { property: 'og:title', content: data.title },
+        { property: 'og:title', content: pageTitle },
         { property: 'og:description', content: description },
         { property: 'og:image', content: primaryImage },
+        { property: 'og:image:alt', content: pageTitle },
         { property: 'og:url', content: url },
         { property: 'og:type', content: 'product' },
         { property: 'og:site_name', content: 'Go Umroh' },
+        { property: 'product:price:amount', content: data.price },
+        { property: 'product:price:currency', content: 'IDR' },
         { name: 'description', content: description },
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:title', content: data.title },
+        { name: 'twitter:title', content: pageTitle },
         { name: 'twitter:description', content: description },
         { name: 'twitter:image', content: primaryImage },
     ];
@@ -164,14 +169,47 @@ function setOpenGraphTags(data) {
         }
         el.setAttribute('content', content);
     });
+
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+        canonical = document.createElement('link');
+        canonical.setAttribute('rel', 'canonical');
+        document.head.appendChild(canonical);
+    }
+    canonical.setAttribute('href', url);
+
+    // Schema.org JSON-LD structured data for Google Search rich snippets
+    let scriptTag = document.getElementById('schema-package-jsonld');
+    if (!scriptTag) {
+        scriptTag = document.createElement('script');
+        scriptTag.id = 'schema-package-jsonld';
+        scriptTag.type = 'application/ld+json';
+        document.head.appendChild(scriptTag);
+    }
+    scriptTag.textContent = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": data.title,
+        "image": primaryImage,
+        "description": description,
+        "offers": {
+            "@type": "Offer",
+            "url": url,
+            "priceCurrency": "IDR",
+            "price": Number(data.price),
+            "availability": data.available_seats > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            "seller": {
+                "@type": "Organization",
+                "name": data.merchant?.business_name || data.merchant?.name || "Go Umroh"
+            }
+        }
+    });
 }
 
 /** Remove dynamic OG tags when navigating away */
 function removeOpenGraphTags() {
     document.title = 'Go Umroh — Marketplace Umroh Terpercaya';
-    ['og:title', 'og:description', 'og:image', 'og:url', 'og:type'].forEach(prop => {
-        document.querySelector(`meta[property="${prop}"]`)?.remove();
-    });
+    document.getElementById('schema-package-jsonld')?.remove();
 }
 
 onMounted(async () => {

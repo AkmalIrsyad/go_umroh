@@ -19,11 +19,8 @@
     >
       <!-- Logo Header -->
       <div class="flex items-center justify-between px-6 py-5 border-b border-white/10 shrink-0">
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 bg-brass rounded-xl flex items-center justify-center font-bold text-white shadow-lg shadow-brass/20">
-            GU
-          </div>
-          <span class="font-bold text-xl tracking-tight">Go<span class="text-brass">Umrah</span></span>
+        <div class="bg-white px-3 py-1.5 rounded-xl shadow-xs flex items-center">
+          <img src="/go_umroh.svg" alt="Go Umroh" class="h-7 w-auto object-contain" />
         </div>
         <button 
           @click="sidebarOpen = false" 

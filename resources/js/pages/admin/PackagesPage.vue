@@ -177,22 +177,24 @@ function filterStatus(st) {
 
 async function updateStatus(row, newStatus) {
     try {
-        await axios.put(`/api/v1/admin/packages/${row.id}/status`, { status: newStatus });
+        const identifier = row.slug || row.id;
+        await axios.put(`/api/v1/admin/packages/${identifier}/status`, { status: newStatus });
         success(`Status paket berhasil diubah ke ${newStatus}!`);
         fetchPackages({ search: currentSearch.value });
-    } catch {
-        showError('Gagal mengubah status paket.');
+    } catch (e) {
+        showError(e.response?.data?.message || 'Gagal mengubah status paket.');
     }
 }
 
 async function deletePackage(row) {
     if (!confirm(`Hapus paket "${row.title}"?`)) return;
     try {
-        await axios.delete(`/api/v1/admin/packages/${row.id}`);
+        const identifier = row.slug || row.id;
+        await axios.delete(`/api/v1/admin/packages/${identifier}`);
         success('Paket berhasil dihapus.');
         fetchPackages({ search: currentSearch.value });
-    } catch {
-        showError('Gagal menghapus paket.');
+    } catch (e) {
+        showError(e.response?.data?.message || 'Gagal menghapus paket.');
     }
 }
 

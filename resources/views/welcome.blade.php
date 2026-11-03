@@ -4,18 +4,65 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Go Umroh - Marketplace Paket Umrah Terpercaya. Temukan ratusan paket umroh resmi dengan harga transparan dan kepastian keberangkatan.">
-    <title>Go Umroh — Marketplace Umroh Terpercaya</title>
 
-    {{-- Open Graph / Social Media Preview (default, akan di-override oleh Vue di halaman detail) --}}
-    <meta property="og:type" content="website">
+    @php
+        $pageTitle = isset($seo['title']) ? $seo['title'] : 'Go Umroh — Marketplace Umroh Terpercaya';
+        $pageDesc = isset($seo['description']) ? $seo['description'] : 'Go Umroh - Marketplace Paket Umrah Terpercaya. Temukan ratusan paket umroh resmi dengan harga transparan dan kepastian keberangkatan.';
+        $pageUrl = isset($seo['url']) ? $seo['url'] : url()->current();
+        $pageImage = isset($seo['image']) ? $seo['image'] : asset('go_umroh.svg');
+        $pageType = isset($seo['type']) ? $seo['type'] : 'website';
+    @endphp
+
+    <title>{{ $pageTitle }}</title>
+    <meta name="description" content="{{ $pageDesc }}">
+    <link rel="canonical" href="{{ $pageUrl }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('go_umroh.svg') }}">
+
+    {{-- Open Graph / Facebook / WhatsApp Preview --}}
+    <meta property="og:type" content="{{ $pageType }}">
     <meta property="og:site_name" content="Go Umroh">
-    <meta property="og:title" content="Go Umroh — Marketplace Umroh Terpercaya">
-    <meta property="og:description" content="Temukan ratusan paket umroh resmi dengan jaminan fasilitas terbaik, kepastian keberangkatan, dan transparansi harga.">
-    <meta property="og:url" content="{{ url('/') }}">
+    <meta property="og:title" content="{{ $pageTitle }}">
+    <meta property="og:description" content="{{ $pageDesc }}">
+    <meta property="og:url" content="{{ $pageUrl }}">
+    <meta property="og:image" content="{{ $pageImage }}">
+    <meta property="og:image:alt" content="{{ $pageTitle }}">
+    @if(isset($seo['price']))
+    <meta property="product:price:amount" content="{{ $seo['price'] }}">
+    <meta property="product:price:currency" content="IDR">
+    @endif
+
+    {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Go Umroh — Marketplace Umroh Terpercaya">
-    <meta name="twitter:description" content="Temukan ratusan paket umroh resmi dengan jaminan fasilitas terbaik, kepastian keberangkatan, dan transparansi harga.">
+    <meta name="twitter:title" content="{{ $pageTitle }}">
+    <meta name="twitter:description" content="{{ $pageDesc }}">
+    <meta name="twitter:image" content="{{ $pageImage }}">
+
+    @if(!empty($seo['package']))
+    {{-- Schema.org Structured Data (JSON-LD) for Search Engines / Google Rich Snippets --}}
+    <script type="application/ld+json">
+    {!! json_encode([
+        '@context' => 'https://schema.org',
+        '@type' => 'Product',
+        'name' => $seo['package']['name'],
+        'image' => $seo['image'],
+        'description' => $seo['description'],
+        'offers' => [
+            '@type' => 'Offer',
+            'url' => $seo['url'],
+            'priceCurrency' => 'IDR',
+            'price' => (float) $seo['package']['price'],
+            'availability' => $seo['package']['seats'] > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+            'seller' => [
+                '@type' => 'Organization',
+                'name' => $seo['package']['merchant'],
+            ],
+        ],
+    ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+    </script>
+    @endif
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet"
         href="https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css">

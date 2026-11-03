@@ -8,11 +8,10 @@
                     
                     <!-- Left: Logo (Diatur width-nya agar bisa menyeimbangkan flex-center) -->
                     <div class="flex-shrink-0 md:w-1/4 flex items-center">
-                        <RouterLink to="/" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
-                            <div class="w-10 h-10 bg-brass rounded-xl flex items-center justify-center shadow-lg">
-                                <span class="text-white font-bold text-base">GU</span>
+                        <RouterLink to="/" class="flex items-center hover:opacity-95 transition-opacity">
+                            <div class="bg-white px-3 py-1.5 rounded-xl shadow-xs flex items-center">
+                                <img src="/go_umroh.svg" alt="Go Umroh" class="h-8 md:h-9 w-auto object-contain" />
                             </div>
-                            <span class="font-bold text-2xl tracking-tight">Go<span class="text-brass">Umrah</span></span>
                         </RouterLink>
                     </div>
 
@@ -122,11 +121,10 @@
                     
                     <!-- Col 1: Brand & About -->
                     <div class="lg:col-span-1">
-                        <div class="flex items-center gap-3 mb-6">
-                            <div class="w-10 h-10 bg-brass rounded-xl flex items-center justify-center">
-                                <span class="text-white font-bold text-base">GU</span>
+                        <div class="mb-6">
+                            <div class="bg-white px-3 py-1.5 rounded-xl shadow-xs inline-flex items-center">
+                                <img src="/go_umroh.svg" alt="Go Umroh" class="h-8 w-auto object-contain" />
                             </div>
-                            <span class="font-bold text-2xl tracking-tight">Go<span class="text-brass">Umrah</span></span>
                         </div>
                         <p class="text-white/60 text-sm leading-relaxed mb-6">
                             Marketplace paket umrah terpercaya. Memudahkan jamaah menemukan paket ibadah terbaik, aman, dan nyaman dari travel resmi Kemenag.

@@ -106,11 +106,12 @@ async function fetchPackages(p = {}) {
 async function deletePackage(row) {
     if (!confirm(`Hapus paket "${row.title}"?`)) return;
     try {
-        await axios.delete(`/api/v1/merchant/packages/${row.id}`);
+        const identifier = row.slug || row.id;
+        await axios.delete(`/api/v1/merchant/packages/${identifier}`);
         success('Paket berhasil dihapus.');
         fetchPackages({ search: search.value });
-    } catch {
-        showError('Gagal menghapus paket.');
+    } catch (e) {
+        showError(e.response?.data?.message || 'Gagal menghapus paket.');
     }
 }
 

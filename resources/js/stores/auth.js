@@ -57,6 +57,10 @@ export const useAuthStore = defineStore('auth', () => {
         const { data } = await axios.get('/api/v1/me');
         user.value = data.data;
         localStorage.setItem('go_umrah_user', JSON.stringify(user.value));
+        // If user got suspended while logged in, redirect immediately
+        if (user.value?.status === 'pending') {
+            window.location.href = '/suspended';
+        }
     }
 
     return { user, token, isAuthenticated, hasRole, initFromStorage, login, register, logout, fetchMe };

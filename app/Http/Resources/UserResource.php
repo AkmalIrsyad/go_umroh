@@ -16,7 +16,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'phone_number' => $this->phone_number,
             'business_name' => $this->business_name,
-            'avatar' => $this->avatar ? asset('storage/'.$this->avatar) : null,
+            'avatar' => $this->avatar ? (str_starts_with($this->avatar, 'http') ? $this->avatar : asset('storage/'.$this->avatar)) : null,
             'status' => $this->status,
             'roles' => $this->whenLoaded('roles', fn () => $this->roles->pluck('name')),
             'created_at' => $this->created_at?->toDateTimeString(),

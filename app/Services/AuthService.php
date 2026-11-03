@@ -51,6 +51,12 @@ class AuthService
             ]);
         }
 
+        if ($user->status === 'pending') {
+            throw ValidationException::withMessages([
+                'email' => ['Akun Anda sedang ditangguhkan. Hubungi administrator untuk informasi lebih lanjut.'],
+            ]);
+        }
+
         $token = $user->createToken('auth-token')->plainTextToken;
 
         return [
@@ -65,5 +71,66 @@ class AuthService
     public function logout(User $user): void
     {
         $user->currentAccessToken()->delete();
+    }
+
+    /**
+     * Handle Google OAuth login or registration.
+     *
+     * @param  \Laravel\Socialite\Contracts\User  $googleUser
+     * @param  string  $requestedRole
+     * @return array{user: User, token: string}
+     */
+    public function handleGoogleUser(\Laravel\Socialite\Contracts\User $googleUser, string $requestedRole = 'user'): array
+    {
+        $email = $googleUser->getEmail();
+        $googleId = (string) $googleUser->getId();
+
+        /** @var User|null $user */
+        $user = User::where('google_id', $googleId)
+            ->orWhere('email', $email)
+            ->first();
+
+        if ($user) {
+            $updated = false;
+            if (! $user->google_id) {
+                $user->google_id = $googleId;
+                $updated = true;
+            }
+            if (! $user->avatar && $googleUser->getAvatar()) {
+                $user->avatar = $googleUser->getAvatar();
+                $updated = true;
+            }
+            if ($updated) {
+                $user->save();
+            }
+
+            // Block suspended existing users from logging in via Google
+            if ($user->status === 'pending') {
+                throw ValidationException::withMessages([
+                    'email' => ['Akun Anda sedang ditangguhkan. Hubungi administrator untuk informasi lebih lanjut.'],
+                ]);
+            }
+        } else {
+            $role = in_array($requestedRole, ['user', 'merchants']) ? $requestedRole : 'user';
+
+            /** @var User $user */
+            $user = User::create([
+                'name' => $googleUser->getName() ?: 'Pengguna Google',
+                'email' => $email,
+                'google_id' => $googleId,
+                'avatar' => $googleUser->getAvatar(),
+                'status' => $role === 'merchants' ? 'pending' : 'approved',
+                'password' => null,
+            ]);
+
+            $user->assignRole($role);
+        }
+
+        $token = $user->createToken('auth-token')->plainTextToken;
+
+        return [
+            'user' => $user->load('roles'),
+            'token' => $token,
+        ];
     }
 }

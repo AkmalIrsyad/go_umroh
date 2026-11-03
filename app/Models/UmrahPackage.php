@@ -25,6 +25,19 @@ class UmrahPackage extends Model
         return 'slug';
     }
 
+    /**
+     * Retrieve the model for a bound value (supports both slug and numeric ID).
+     */
+    public function resolveRouteBindingQuery($query, $value, $field = null)
+    {
+        return $query->where(function ($q) use ($value, $field) {
+            $q->where($field ?? $this->getRouteKeyName(), $value);
+            if (is_numeric($value)) {
+                $q->orWhere('id', (int) $value);
+            }
+        });
+    }
+
     protected static function boot(): void
     {
         parent::boot();

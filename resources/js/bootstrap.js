@@ -14,13 +14,20 @@ window.axios.interceptors.request.use((config) => {
     return config;
 });
 
-// Interceptor: redirect to login on 401
+// Interceptor: redirect to login on 401, to /suspended on 403 account_suspended
 window.axios.interceptors.response.use(
     (r) => r,
     (error) => {
         if (error.response?.status === 401) {
             localStorage.removeItem('go_umrah_token');
+            localStorage.removeItem('go_umrah_user');
             window.location.href = '/login';
+        }
+        if (
+            error.response?.status === 403 &&
+            error.response?.data?.error === 'account_suspended'
+        ) {
+            window.location.href = '/suspended';
         }
         return Promise.reject(error);
     }
