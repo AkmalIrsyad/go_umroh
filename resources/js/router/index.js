@@ -102,4 +102,14 @@ router.beforeEach((to, from, next) => {
     next();
 });
 
+router.afterEach((to) => {
+    // Track page views on client-side SPA route transitions for GA4
+    if (typeof window.gtag === 'function') {
+        window.gtag('config', 'G-0GRNKTTQ7L', {
+            page_path: to.fullPath,
+            page_title: document.title,
+        });
+    }
+});
+
 export default router;

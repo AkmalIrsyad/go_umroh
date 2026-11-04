@@ -5,6 +5,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0GRNKTTQ7L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-0GRNKTTQ7L');
+    </script>
+
     @php
         $pageTitle = isset($seo['title']) ? $seo['title'] : 'Go Umroh — Marketplace Umroh Terpercaya';
         $pageDesc = isset($seo['description']) ? $seo['description'] : 'Go Umroh - Marketplace Paket Umrah Terpercaya. Temukan ratusan paket umroh resmi dengan harga transparan dan kepastian keberangkatan.';
@@ -28,6 +38,7 @@
     <meta property="og:url" content="{{ $pageUrl }}">
     <meta property="og:image" content="{{ $pageImage }}">
     <meta property="og:image:alt" content="{{ $pageTitle }}">
+    <meta property="og:logo" content="{{ asset('go_umroh.svg') }}">
     @if(isset($seo['price']))
     <meta property="product:price:amount" content="{{ $seo['price'] }}">
     <meta property="product:price:currency" content="IDR">

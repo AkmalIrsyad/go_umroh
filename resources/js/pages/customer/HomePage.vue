@@ -437,6 +437,9 @@
         </div>
       </div>
     </section>
+
+    <!-- Floating WhatsApp Button -->
+    <FloatingWhatsApp phoneNumber="6281234567890" message="Halo Go Umroh, saya ingin bertanya tentang paket umroh." />
   </CustomerLayout>
 </template>
 
@@ -445,6 +448,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 import CustomerLayout from '../../layouts/CustomerLayout.vue';
 import PackageCard from '../../components/PackageCard.vue';
+import FloatingWhatsApp from '../../components/FloatingWhatsApp.vue';
 import { useFormatCurrency } from '../../composables/useFormatCurrency';
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
